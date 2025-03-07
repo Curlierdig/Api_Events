@@ -10,18 +10,21 @@
    
 
 </head>
-<body>
-    <div>
-    <div class="ini">
-        <div><h1>Eventos Y Actividades Culturales</h1></div>
+<body style="background: linear-gradient(to right, #f3564c, #f3a94c); color: #fff;">
+    <div class="container text-center">
+    <div class="container">
+        <h1 class="title">Eventos Y Actividades Culturales</h1>
+        <div class="img-start">
+            <!--hacer que la imagen se vea de manera horizontal-->
+            <img src="/app/static/img/cuu_centro.jpg" alt="cuu" class="img-fluid">
+        </div>
     </div>
     <!-- FECHA -->
     <input type="date" id="fecha" name="fecha">
     
-    
-    <div class="btn-group">
+    <div class="btn-group" style="width:fit-content;">
         <!-- TIPOS DE EVENTOS -->
-        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="margin: 1.5rem;">
           Tipo de evento
         </button>
         <ul class="dropdown-menu">
@@ -31,16 +34,16 @@
         </ul>
       </div>
       <!-- PRESUPUESTO -->
-      <input type="number" id="presupuesto" name="presupuesto" placeholder="Presupuesto" min="0" max="5000">
+      <input type="number" id="presupuesto" name="presupuesto" placeholder="Presupuesto" min="0" max="5000" style="width: fit-content;">
       </div>
     
     
     </div>
     <section class="pt-5 pb-5">
         <div class="container">
-            <div class="row">
-                <div class="col-6">
-                    <h3 class="mb-3">Carousel cards title</h3>
+            <div class="mx-auto" style="max-width: 1000px;">
+                <div class="text-center">
+                    <h3>Eventos</h3>
                 </div>
     
                 <div class="col-12">
