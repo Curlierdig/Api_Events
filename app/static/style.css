@@ -51,3 +51,7 @@ flex-wrap: wrap;
     object-fit: cover;
     object-position: center top;
 }
+
+.block-filter-car {
+    margin-top: 1.5rem;
+}
