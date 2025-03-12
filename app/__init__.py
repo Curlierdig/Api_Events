@@ -1,11 +1,13 @@
+import os
 from flask import Flask
-from flask_mysqldb import MySQL
+from mapkick.flask import mapkick_blueprint
+from app.database.db import init_app
 from config import Config
-from app.routes import index
-
-mysql = MySQL()
+from app.routes import views, api
+from dotenv import load_dotenv
 
 def create_app(config_class = Config):
+    load_dotenv()
     app = Flask(__name__)
     
     app.config.from_object(config_class)
@@ -16,9 +18,13 @@ def create_app(config_class = Config):
     app.config['MYSQL_DB'] = app.config.get('DB_NAME')
     app.config['MYSQL_PORT'] = app.config.get('DB_PORT')
     app.config['MYSQL_CURSORCLASS'] = app.config.get('DB_CURSORCLASS')
+    app.config["MAPBOX_ACCESS_TOKEN"] = os.environ.get("MAPBOX_TOKEN")
 
-    mysql.init_app(app)
-    
-    app.register_blueprint(index.bp)
+
+    init_app(app)
+
+    app.register_blueprint(mapkick_blueprint)
+    app.register_blueprint(views.bp)
+    app.register_blueprint(api.bp)
     
     return app
