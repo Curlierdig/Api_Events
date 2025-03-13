@@ -30,19 +30,27 @@ class EventModel:
             events_data["organizer"] = self.get_organizer_by_id(events_data["organizer_id"])
             events_data["type"] = self.get_type_by_id(events_data["type_id"])
 
+            #convertir campos timedelta a segundos
+            for key, value in events_data.items():
+                if isinstance(value, timedelta):
+                    events_data[key] = value.total_seconds()  # O str(value)
             return events_data
         else:
             events_with_details = []
-
             for event in events_data:
                 event_copy = dict(event)
 
                 event_copy["location"] = self.get_location_by_id(event["location_id"])
                 event_copy["organizer"] = self.get_organizer_by_id(event["organizer_id"])
                 event_copy["type"] = self.get_type_by_id(event["type_id"])
-                
+
+                #convertir campos timedelta a segundos
+                for key, value in event_copy.items():
+                    if isinstance(value, timedelta):
+                        event_copy[key] = value.total_seconds()  # O str(value)
+
                 events_with_details.append(event_copy)
-            
+            #regresamos los eventos en un tuple
             return tuple(events_with_details)
 
     def get_events(self):
