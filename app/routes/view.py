@@ -28,8 +28,17 @@ def show_event(id):
         response.raise_for_status()
 
         event = response.json()
-
-        map = Map([{'latitude': event["location"]["lat"], 'longitude': event["location"]["lng"]}])
+        
+        # Crea un punto para el mapa con los datos del evento
+        location_data = {
+            'latitude': event["location"]["lat"], 
+            'longitude': event["location"]["lng"],
+            'title': event["name"],  # Asumiendo que el evento tiene un nombre
+            'description': event["location"].get("address", "")  # Asumiendo que hay una dirección
+        }
+        
+        # Crea el mapa con el punto
+        map = Map([location_data])
 
         return render_template('event_detail.html', event=event, map=map, mapbox_token=current_app.config["MAPBOX_ACCESS_TOKEN"])
     

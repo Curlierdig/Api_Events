@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Events</title>
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.css" />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.css" rel="stylesheet" />
 </head>
 <body style="background: linear-gradient(to right, #f3564c, #f3a94c); color: #fff;">
     <header>
@@ -292,9 +294,35 @@
             </div>
         </div>
     </section>
-    {{ map }}
+    <!-- Contenedor del mapa (debe tener altura definida) -->
+    <div id="map" style="height: 500px; width: 100%;"></div>
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.css" rel="stylesheet" />
+<script>
+  // Acceder al token desde Flask
+  mapboxgl.accessToken = "{{ mapbox_token }}";
+  
+  // Para depuración
+  console.log("Token:", mapboxgl.accessToken);
+  
+  // Inicializar mapa
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v12',
+    center: [-106.0691, 28.6353],  // Coordenadas de Chihuahua
+    zoom: 12
+  });
+</script>
+
 </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="{{ url_for('static', filename='js/fechas.js') }}"></script>
+<script src="{{ url_for('static', filename='js/filtros.js') }}"></script>
+<script src="{{ url_for('static', filename='js/mapbox.js') }}" defer></script>\
+<script src="{{ url_for('static', filename='js/mapbox-gl.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/mapkick.js') }}" defer></script>
+
+
+
 </body>
 </html>

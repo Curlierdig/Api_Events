@@ -5,10 +5,14 @@ from app.database.db import init_app
 from config import Config
 from app.routes import view, api
 from dotenv import load_dotenv
+from app.routes.index import bp
 
 def create_app(config_class = Config):
     load_dotenv()
     app = Flask(__name__)
+    
+    app.config['MAPBOX_TOKEN'] = 'pk.eyJ1Ijoicm9kcmlnby1hYmRlMSIsImEiOiJjbTg0cGw5ZHkyMGViMmxvazlxM3VpZDZsIn0.47YXppYyQNHnN_at8CcUQA'
+    app.register_blueprint(bp)
     
     app.config.from_object(config_class)
     
