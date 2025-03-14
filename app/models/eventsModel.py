@@ -1,29 +1,30 @@
 from datetime import timedelta, date
 from app.utils.db_utils import get_cursor, close_cursor
-
+# Clase que se encarga de manejar los eventos con instrucciones SQL para llamar a la base de datos
 class EventModel:
+    # Constructor de la clase
     def __init__(self):
         self.events = ()
         self.cur = get_cursor()
         self.location = ()
         self.organizer = ()
         self.type = ()
-
+# Funcion para obtener la ubicacion de un evento por su id
     def get_location_by_id(self, id_location):
         self.cur.execute("SELECT * FROM tlocations WHERE id = %s", (id_location,))
         self.location = self.cur.fetchone()
         return self.location
-    
+# Funcion para obtener el organizador de un evento con el id
     def get_organizer_by_id(self, id_organizer):
         self.cur.execute("SELECT * FROM torganizers WHERE id = %s", (id_organizer,))
         self.organizer = self.cur.fetchone()
         return self.organizer
-    
+# Funcion para obtener el tipo de un evento con el id
     def get_type_by_id(self, id_type):
         self.cur.execute("SELECT * FROM tevent_types WHERE id = %s", (id_type,))
         self.type = self.cur.fetchone()
         return self.type
-
+# Funcion para obtener los detalles de un evento
     def get_details(self, events_data):
         if isinstance(events_data, dict):
             events_data["location"] = self.get_location_by_id(events_data["location_id"])
@@ -52,21 +53,21 @@ class EventModel:
                 events_with_details.append(event_copy)
             #regresamos los eventos en un tuple
             return tuple(events_with_details)
-
+# Func para obtener todos los eventos
     def get_events(self):
         self.cur.execute("SELECT * FROM tevents ORDER BY id")
         self.events = self.cur.fetchall()
         self.events = self.get_details(self.events)
         close_cursor(self.cur)
         return self.events
-    
+# Func para obtener un evento por su id
     def get_event_with_id(self, id_event):
         self.cur.execute("SELECT * FROM tevents WHERE id = %s", (id_event,))
         event = self.cur.fetchone()
         event = self.get_details(event)
         close_cursor(self.cur)
         return event
-    
+# Func para eventos filtrados 
     def get_filtered_events(self, start_date=None, end_date=None, type_id=None, budget=None):
         query = "SELECT * FROM tevents WHERE 1=1"
         params = []
@@ -98,16 +99,16 @@ class EventModel:
         self.events = self.get_details(self.events)
         close_cursor(self.cur)
         return self.events
-
+# Func para obtener eventos por rango de fechas
     def get_events_by_date_range(self, start_date, end_date):
         return self.get_filtered_events(start_date=start_date, end_date=end_date)
-
+# Func para obtener eventos por tipo
     def get_events_by_type(self, type_id):
         return self.get_filtered_events(type_id=type_id)
-
+# Obtener los eventos por presupuesto
     def get_events_by_budget(self, max_budget):
         return self.get_filtered_events(budget=max_budget)
-    
+# Obtener los eventos destacados    
     def get_featured_events(self):
         query = f"SELECT * FROM tevents WHERE date >= '{date.today()}' AND date <= '{date.today() + timedelta(7)}'"
         self.cur.execute(query)

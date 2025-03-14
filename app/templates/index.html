@@ -25,7 +25,7 @@
    
     <script src="{{ url_for('static', filename='js/fechas.js') }}"></script>
 <script src="{{ url_for('static', filename='js/filtros.js') }}"></script>
-<script src="{{ url_for('static', filename='js/mapbox.js') }}" defer></script>\
+<script src="{{ url_for('static', filename='js/mapbox.js') }}" defer></script>
 <script src="{{ url_for('static', filename='js/mapbox-gl.js') }}" defer></script>
 <script src="{{ url_for('static', filename='js/mapkick.js') }}" defer></script>
 
@@ -145,6 +145,14 @@
                                 <button type="button" data-bs-target="#eventosCarousel" data-bs-slide-to="0" class="active"></button>
                                 <button type="button" data-bs-target="#eventosCarousel" data-bs-slide-to="1"></button>
                                 <button type="button" data-bs-target="#eventosCarousel" data-bs-slide-to="2"></button>
+                            </div>
+                            <div class="text-center mt-4" style="margin-bottom: 1rem;">
+                                <button class="btn btn-primary me-2" type="button" data-bs-target="#eventosCarousel" data-bs-slide="prev">
+                                    <i class="fas fa-chevron-left"></i> Anterior
+                                </button>
+                                <button class="btn btn-primary" type="button" data-bs-target="#eventosCarousel" data-bs-slide="next">
+                                    Siguiente <i class="fas fa-chevron-right"></i>
+                                </button>
                             </div>
                             
                             <div class="carousel-inner">
@@ -301,16 +309,8 @@
                                             </div>
                                                     
     
-                        <!-- Controles del carrusel -->
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Anterior</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Siguiente</span>
-                        </button>
-    
+
+                        
                     </div>
                 </div>
             </div>

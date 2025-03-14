@@ -6,14 +6,14 @@ from config import Config
 from app.routes import view, api
 from dotenv import load_dotenv
 from app.routes.index import bp
-
+# Funcion que crea la aplicacion de Flask
 def create_app(config_class = Config):
     load_dotenv()
     app = Flask(__name__)
-    
+    # Api key para probar el mapa
     app.config['MAPBOX_TOKEN'] = 'pk.eyJ1Ijoicm9kcmlnby1hYmRlMSIsImEiOiJjbTg0cGw5ZHkyMGViMmxvazlxM3VpZDZsIn0.47YXppYyQNHnN_at8CcUQA'
     app.register_blueprint(bp)
-    
+    # Carga la configuracion de la aplicacion
     app.config.from_object(config_class)
     
     app.config['MYSQL_HOST'] = app.config.get('DB_HOST')
