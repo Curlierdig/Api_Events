@@ -3,7 +3,7 @@ from mapkick.flask import Map
 import requests
 
 bp = Blueprint('views', __name__)
-
+# Blueprint para la ruta raiz de la aplicación
 @bp.route('/')
 def index():
     api_get_event = "http://127.0.0.1:4000/api/events/featured"
@@ -18,7 +18,7 @@ def index():
     
     except requests.exceptions.RequestException as e:
         return jsonify({"error": str(e)}), 500
-
+# Blueprint para la ruta de detalle de un evento
 @bp.route('/event/<int:id>')
 def show_event(id):
     api_get_event = f"http://127.0.0.1:4000/api/events/{id}"
