@@ -80,22 +80,27 @@ class EventModel:
             query += " AND date <= %s"
             params.append(end_date)
     
-        if type_id:
-            query += " AND type_id = %s"
-            params.append(type_id)
-    
-        if budget:
-            try:
-                budget_float = float(budget)
-                query += " AND budget <= %s"
-                params.append(budget_float)
-            except ValueError:
-            # Si el presupuesto no es un número válido, simplemente lo ignoramos
-                pass
-    
+        if type_id is not None:
+            if len(type_id) > 1:
+                values = ', '.join(['%s'] * len(type_id))
+                query += f" AND type_id IN ({values})"
+                params.extend(type_id)
+            else:
+                query += " AND type_id = %s"
+                params.append(type_id)
+        
+        if budget is not None:
+            query += " AND budget <= %s"
+            params.append(budget)
+
+        query += "ORDER BY date"
+        
+        # Ejecutar la consulta con los parámetros
         self.cur.execute(query, tuple(params))
-        result = self.cur.fetchall()
-        return result
+        self.events = self.cur.fetchall()
+        self.events = self.get_details(self.events)
+        close_cursor(self.cur)
+        return self.events
 # Func para obtener eventos por rango de fechas
     def get_events_by_date_range(self, start_date, end_date):
         return self.get_filtered_events(start_date=start_date, end_date=end_date)

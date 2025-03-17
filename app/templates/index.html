@@ -1,70 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Events</title>
-    <!-- css -->
-    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- ajax -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-    
-    <!-- mapa -->
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.css" rel="stylesheet" />
-    <!-- jquery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <!-- ajax moment -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-    <!-- daterange -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-daterangepicker/daterangepicker.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-daterangepicker/daterangepicker.css">
-   
-    <script src="{{ url_for('static', filename='js/fechas.js') }}"></script>
-<script src="{{ url_for('static', filename='js/filtros.js') }}"></script>
-<script src="{{ url_for('static', filename='js/mapbox.js') }}" defer></script>
-<script src="{{ url_for('static', filename='js/mapbox-gl.js') }}" defer></script>
-<script src="{{ url_for('static', filename='js/mapkick.js') }}" defer></script>
-
-
-
-</head>
-<body style="background: linear-gradient(to right, #f3564c, #f3a94c); color: #fff;">
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
-            <div class="container">
-                <a class="navbar-brand fs-3 fw-bold" href="#">
-                    <i class="fas fa-calendar-alt me-2"></i>
-                        Chihuaevents
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Inicio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Eventos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Contacto</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <div class="container my-4">
-        <!-- Hero image with overlay text -->
-        <div class="position-relative">
+{% extends "/layouts/base.html"%} {% block title %}ChiFest{% endblock %} {% block body %}
+<div class="p-5 rounded-3 mb-5 text-center" style="background-color: #324b4f; color: white;">
+	<div class="py-4">
+		<div class="position-relative">
             <div class="img-start shadow">
-                <img src="{{url_for('static', filename='img//cuu_centro.jpg')}}" alt="Chihuahua City" class="img-fluid">
+                <img src="{{ url_for('static', filename='img/cuu_centro.jpg') }}" alt="Chihuahua City" class="img-fluid">
             </div>
             <div class="position-absolute top-50 start-50 translate-middle text-center">
                 <div class="bg-dark bg-opacity-75 p-4 rounded">
@@ -73,272 +12,162 @@
                 </div>
             </div>
         </div>
-        <form id="filterForm">
-        <!-- Filters section with improved layout -->
-        <div class="filter-container bg-dark bg-opacity-75 shadow text-white">
-            <h4 class="mb-4 border-bottom pb-2" style="margin-left: 1rem;">Filtrar Eventos</h4>
-            <div class="row g-3 align-items-center">
-                <!-- Date filter -->
-                <div class="col-md-4" >
-                    <label for="fecha" class="form-label">Fecha</label>
-                    <input type="date" id="fecha" name="fecha" class="form-control form-control-lg">
-                </div>
-                
-                <!-- Event type filter -->
-                <div class="col-md-4">
-                    <label class="form-label">Tipo de evento</label>
-                    <div class="btn-group w-100">
-                        <button class="btn btn-success dropdown-toggle form-control-lg" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Seleccionar tipo
-                        </button>
-                        <ul class="dropdown-menu w-100">
-                            <li><div class="dropdown-item">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="tipo-cultural" value="Cultural">
-                                    <label class="form-check-label" for="tipo-cultural">Cultural</label>
-                                </div>
-                            </div></li>
-                            <li><div class="dropdown-item">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="tipo-deportivo" value="Deportivo">
-                                    <label class="form-check-label" for="tipo-deportivo">Deportivo</label>
-                                </div>
-                            </div></li>
-                            <li><div class="dropdown-item">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="tipo-musical" value="Musical">
-                                    <label class="form-check-label" for="tipo-musical">Musical</label>
-                                </div>
-                            </div></li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <!-- Budget filter -->
-                <div class="col-md-4">
-                    <label for="presupuesto" class="form-label">Presupuesto máximo</label>
-                    <div class="input-group">
-                        <span class="input-group-text">$</span>
-                        <input type="number" id="presupuesto" name="presupuesto" class="form-control form-control-lg" placeholder="Presupuesto" min="0" max="5000">
-                    </div>
-                </div>
-                
-                <!-- Submit button -->
-                <div class="col-12 text-center mt-4">
-                    <button class="btn btn-primary btn-lg px-5">Buscar eventos</button>
-                </div>
-            </div>
-        </div>
-</form>
-        <!-- Events section with improved carousel -->
-        <section class="py-5">
-            <div class="container">
-                <div class="text-center mb-5">
-                    <h2 class="fw-bold">Eventos Destacados</h2>
-                    <p class="lead">Descubre las mejores actividades culturales de Chihuahua</p>
-                </div>
-    
-                <div class="row">
-                    <div class="col-12">
-                        <div id="eventosCarousel" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-indicators" style="bottom: -40px;">
-                                <button type="button" data-bs-target="#eventosCarousel" data-bs-slide-to="0" class="active"></button>
-                                <button type="button" data-bs-target="#eventosCarousel" data-bs-slide-to="1"></button>
-                                <button type="button" data-bs-target="#eventosCarousel" data-bs-slide-to="2"></button>
-                            </div>
-                            <div class="text-center mt-4" style="margin-bottom: 1rem;">
-                                <button class="btn btn-primary me-2" type="button" data-bs-target="#eventosCarousel" data-bs-slide="prev">
-                                    <i class="fas fa-chevron-left"></i> Anterior
-                                </button>
-                                <button class="btn btn-primary" type="button" data-bs-target="#eventosCarousel" data-bs-slide="next">
-                                    Siguiente <i class="fas fa-chevron-right"></i>
-                                </button>
-                            </div>
-                            
-                            <div class="carousel-inner">
-                                <!-- First slide -->
-                                <div class="carousel-item active">
-                                    <div class="row g-4">
-                                        <!-- Event Card 1 -->
-                                        <div class="col-md-4">
-                                            <div class="card shadow h-100">
-                                                <div class="position-relative">
-                                                    <img class="card-img-top" src="{{url_for('static', filename='img//cuu.jpeg')}}" alt="Evento musical">
-                                                    <span class="position-absolute top-0 end-0 badge bg-primary m-2">Musical</span>
-                                                </div>
-                                                <div class="card-body d-flex flex-column p-2">
-                                                    <h4 class="card-title fw-bold">Música y Baile</h4>
-                                                    <p class="card-text flex-grow-1">Se presentará un grupo a tocar música en el centro de la ciudad de Chihuahua y todo el que pase se podrá unir.</p>
-                                                    <div class="mt-auto">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <div>
-                                                                <i class="far fa-calendar-alt text-primary me-2"></i>
-                                                                <span>20/03/2025</span>
-                                                            </div>
-                                                            <div>
-                                                                <i class="far fa-clock text-primary me-2"></i>
-                                                                <span>13:00 Hrs</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="mt-2">
-                                                            <i class="fas fa-map-marker-alt text-primary me-2"></i>
-                                                            <span>Centro de la ciudad</span>
-                                                        </div>
-                                                        <div class="mt-2">
-                                                            <span class="badge bg-success fs-6">Gratuito</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="card-footer bg-transparent border-top-0 text-center">
-                                                    <a href="#" class="btn btn-outline-primary">Ver detalles</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Event Card 2 -->
-                                        <div class="col-md-4">
-                                            <div class="card shadow h-100">
-                                                <div class="position-relative">
-                                                    <img class="card-img-top" src="{{url_for('static', filename='img//cuu2.jpeg')}}" alt="Evento cultural">
-                                                    <span class="position-absolute top-0 end-0 badge bg-success m-2">Cultural</span>
-                                                </div>
-                                                <div class="card-body d-flex flex-column p-2">
-                                                    <h4 class="card-title fw-bold">Exposición de Arte Local</h4>
-                                                    <p class="card-text flex-grow-1">Disfruta de obras de artistas chihuahuenses en esta exposición temporal en el centro cultural.</p>
-                                                    <div class="mt-auto">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <div>
-                                                                <i class="far fa-calendar-alt text-primary me-2"></i>
-                                                                <span>25/03/2025</span>
-                                                            </div>
-                                                            <div>
-                                                                <i class="far fa-clock text-primary me-2"></i>
-                                                                <span>10:00 Hrs</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="mt-2">
-                                                            <i class="fas fa-map-marker-alt text-primary me-2"></i>
-                                                            <span>Centro Cultural Quinta Gameros</span>
-                                                        </div>
-                                                        <div class="mt-2">
-                                                            <span class="badge bg-warning text-dark fs-6">$50 MXN</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="card-footer bg-transparent border-top-0 text-center">
-                                                    <a href="#" class="btn btn-outline-primary">Ver detalles</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Event Card 3 -->
-                                        <div class="col-md-4">
-                                            <div class="card shadow h-100">
-                                                <div class="position-relative">
-                                                    <img class="card-img-top" src="{{url_for('static', filename='img//cuu.jpeg')}}" alt="Evento deportivo">
-                                                    <span class="position-absolute top-0 end-0 badge bg-danger m-2">Deportivo</span>
-                                                </div>
-                                                <div class="card-body d-flex flex-column p-2">
-                                                    <h4 class="card-title fw-bold">Carrera 5K Parque El Palomar</h4>
-                                                    <p class="card-text flex-grow-1">Carrera recreativa para toda la familia en el hermoso Parque El Palomar.</p>
-                                                    <div class="mt-auto">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <div>
-                                                                <i class="far fa-calendar-alt text-primary me-2"></i>
-                                                                <span>02/04/2025</span>
-                                                            </div>
-                                                            <div>
-                                                                <i class="far fa-clock text-primary me-2"></i>
-                                                                <span>08:00 Hrs</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="mt-2">
-                                                            <i class="fas fa-map-marker-alt text-primary me-2"></i>
-                                                            <span>Parque El Palomar</span>
-                                                        </div>
-                                                        <div class="mt-2">
-                                                            <span class="badge bg-warning text-dark fs-6">$150 MXN</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="card-footer bg-transparent border-top-0 text-center">
-                                                    <a href="#" class="btn btn-outline-primary">Ver detalles</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Second slide (placeholder, add similar structure as above) -->
-                                <div class="carousel-item">
-                                    <div class="row g-4">
-                                        <!-- Additional event cards would go here -->
-                                        <div class="col-md-4">
-                                            <div class="card shadow h-100">
-                                                <div class="position-relative">
-                                                    <img class="card-img-top" src="{{url_for('static', filename='img//cuu2.jpeg')}}" alt="Evento">
-                                                    <span class="position-absolute top-0 end-0 badge bg-primary m-2">Musical</span>
-                                                </div>
-                                                <div class="card-body d-flex flex-column p-2">
-                                                    <h4 class="card-title fw-bold">Festival de Jazz</h4>
-                                                    <p class="card-text flex-grow-1">Disfruta de los mejores artistas locales de jazz en este festival anual.</p>
-                                                    <div class="mt-auto">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <div>
-                                                                <i class="far fa-calendar-alt text-primary me-2"></i>
-                                                                <span>25/03/2025</span>
-                                                            </div>
-                                                            <div>
-                                                                <i class="far fa-clock text-primary me-2"></i>
-                                                                <span>10:00 Hrs</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="mt-2">
-                                                            <i class="fas fa-map-marker-alt text-primary me-2"></i>
-                                                            <span>Centro Cultural Quinta Gameros</span>
-                                                        </div>
-                                                        <div class="mt-2">
-                                                            <span class="badge bg-warning text-dark fs-6">$50 MXN</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="card-footer bg-transparent border-top-0 text-center">
-                                                    <a href="#" class="btn btn-outline-primary">Ver detalles</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- Contenedor del mapa (debe tener altura definida) -->
-    <div id="map" style="height: 500px; width: 100%;"></div>
-<script src="https://api.mapbox.com/mapbox-gl-js/v2.12.0/mapbox-gl.js"></script>
-
-<script>
-  // Acceder al token desde Flask
-  mapboxgl.accessToken = "{{ mapbox_token }}";
-  
-  // Para depuración
-  console.log("Token:", mapboxgl.accessToken);
-  
-  // Inicializar mapa
-  const map = new mapboxgl.Map({
-    container: 'map',
-    style: 'mapbox://styles/mapbox/streets-v12',
-    center: [-106.0691, 28.6353],  // Coordenadas de Chihuahua
-    zoom: 12
-  });
-</script>
-
+		<button class="view btn btn-lg px-4" style="background-color: #338346; color: #fff;">
+			<a href="{{ url_for('events') }}" class="text-decoration-none" style="color: #fff;">View all events</a>
+		</button>
+	</div>
 </div>
 
+<div id="event-filters" class="p-4 rounded-3 shadow-sm mb-5" style="background-color: #324b4f; color: white;">
+	<form id="filterForm" class="g-3 d-flex gap-3 flex-wrap justify-content-center">
+		<div>
+			<label for="daterange" class="form-label fw-bold">Rango de fecha</label>
+			<input type="text" id="daterange" name="daterange" class="form-control text-dark" style="border-color: #000;" />
+			<input type="hidden" id="fechaInicio" name="fechaInicio" />
+			<input type="hidden" id="fechaFin" name="fechaFin" />
+		</div>
+		<div class="">
+			<label class="form-label fw-bold">Event Type</label>
+			<div class="dropdown">
+				<button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #fff; border-color: #000;">Select categories</button>
+				<ul class="dropdown-menu p-3 w-100">
+					<li class="mb-2">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" id="musical" name="tipo" value="1" style="border-color: #000;" />
+							<label class="form-check-label" for="musical">Musical</label>
+						</div>
+					</li>
+					<li class="mb-2">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" id="festival" name="tipo" value="2" style="border-color: #000;" />
+							<label class="form-check-label" for="festival">Festival</label>
+						</div>
+					</li>
+					<li class="mb-2">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" id="conferencia" name="tipo" value="3" style="border-color: #000;" />
+							<label class="form-check-label" for="conferencia">Conference</label>
+						</div>
+					</li>
+					<li class="mb-2">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" id="exhibicion" name="tipo" value="4" style="border-color: #000;" />
+							<label class="form-check-label" for="exhibicion">Exhibition</label>
+						</div>
+					</li>
+					<li class="mb-2">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" id="fiesta" name="tipo" value="5" style="border-color: #000;" />
+							<label class="form-check-label" for="fiesta">Party</label>
+						</div>
+					</li>
+					<li class="mb-2">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" id="teatro" name="tipo" value="6" style="border-color: #000;" />
+							<label class="form-check-label" for="teatro">Theater</label>
+						</div>
+					</li>
+					<li class="mb-2">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" id="deportivo" name="tipo" value="7" style="border-color: #000;" />
+							<label class="form-check-label" for="deportivo">Sports</label>
+						</div>
+					</li>
+					<li class="mb-2">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" id="cultural" name="tipo" value="8" style="border-color: #000;" />
+							<label class="form-check-label" for="cultural">Cultural</label>
+						</div>
+					</li>
+					<li class="mb-2">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" id="gastronomia" name="tipo" value="9" style="border-color: #000;" />
+							<label class="form-check-label" for="gastronomia">Gastronomy</label>
+						</div>
+					</li>
+					<li class="mb-2">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" id="educativo" name="tipo" value="10" style="border-color: #000;" />
+							<label class="form-check-label" for="educativo">Educational</label>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="">
+			<label for="presupuesto" class="form-label fw-bold">Maximum Budget</label>
+			<input class="form-control" type="number" id="presupuesto" name="presupuesto" placeholder="MXN" min="0" max="5000" style="border-color: #000;" />
+		</div>
+		<div class="d-flex align-items-end">
+			<button type="submit" class="btn w-100" style="background-color: #338346; color: #fff;">Search events</button>
+		</div>
+	</form>
+</div>
 
+<div id="eventResults" class="container row mb-3">
+</div>
 
+<div class="mb-5">
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<h2 class="fs-1 fw-bold mb-0" style="color: #fff;">Events of the week</h2>
+		<div>
+			<button class="btn" style="background-color: #fff; border-color: #000; color: #000;">View all</button>
+		</div>
+	</div>
 
-
-
-</body>
-</html>
+	<div class="container position-relative py-4">
+		<div id="carouselExampleIndicators2" class="carousel slide" data-bs-ride="false">
+			<div class="carousel-inner px-5">
+				{% for slide in events|batch(3) %}
+				<div class="carousel-item {% if loop.first %}active{% endif %}">
+					<div class="row g-4">
+						{% for event in slide %}
+						<div class="col-12 col-sm-6 col-md-6 col-xl-4">
+							<div class="card h-100 shadow-sm">
+								<div class="position-relative">
+									<img class="card-img-top" src="{{ url_for('static', filename='img/events/' ~ event.image) }}" alt="{{ event.name }}" style="min-height: 255px; object-fit: cover;" />
+									<span class="position-absolute top-0 end-0 m-2 px-2 py-1 rounded-pill fs-6" style="background-color: #338346; color: #324b4f;">{{ event.type.name }}</span>
+								</div>
+								<div class="card-body">
+									<div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+										<span class="px-2 py-1 rounded-2 mb-1" style="background-color: #005c83; color: white;">
+											<i class="fa-solid fa-calendar-days me-2"></i>
+											{{ event.date.strftime('%a, %d %b %Y') }}
+										</span>
+										<span class="px-2 py-1 rounded-3 fw-bold" style="background-color: #348774; color: white;">
+											<i class="fa-solid fa-money-bill me-2"></i>${{ event.budget }} MXN
+										</span>
+									</div>
+									<h3 class="card-title h5 fw-bold">{{ event.name }}</h3>
+									<p class="card-text text-muted mb-3"><i class="fas fa-map-marker-alt me-1"></i>{{ event.location.address }}</p>
+									<p class="card-text">{{ event.description }}</p>
+									<div class="d-flex justify-content-between">
+										<span class="text-muted"><i class="fas fa-clock me-1"></i>{{ event.time }}</span>
+										<a href="/event/{{ event.id }}" class="btn btn-sm" style="border-color: #005c83; color: #005c83;">View details</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+			{% if events|length > 3 %}
+			<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide="prev">
+				<div class="rounded-circle d-flex justify-content-center align-items-center" style="width: 40px; height: 40px; background-color: rgba(50, 75, 79, 0.5);">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				</div>
+				<span class="visually-hidden">Previous</span>
+			</button>
+			<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide="next">
+				<div class="rounded-circle d-flex justify-content-center align-items-center" style="width: 40px; height: 40px; background-color: rgba(50, 75, 79, 0.5);">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				</div>
+				<span class="visually-hidden">Next</span>
+			</button>
+			{% endif %}
+		</div>
+	</div>
+	{% endblock %}
+</div>
