@@ -69,36 +69,33 @@ class EventModel:
         return event
 # Func para eventos filtrados 
     def get_filtered_events(self, start_date=None, end_date=None, type_id=None, budget=None):
-        query = "SELECT * FROM tevents WHERE 1=1"
+        query = "SELECT * FROM events WHERE 1=1"
         params = []
-        
-        if start_date is not None:
+    
+        if start_date:
             query += " AND date >= %s"
             params.append(start_date)
-        
-        if end_date is not None:
+    
+        if end_date:
             query += " AND date <= %s"
             params.append(end_date)
-        
-        if type_id is not None:
-            if len(type_id) > 1:
-                values = ', '.join(['%s'] * len(type_id))
-                query += f" AND type_id IN ({values})"
-                params.extend(type_id)
-            else:
-                query += " AND type_id = %s"
-                params.append(type_id)
-        
-            if budget is not None:
+    
+        if type_id:
+            query += " AND type_id = %s"
+            params.append(type_id)
+    
+        if budget:
+            try:
+                budget_float = float(budget)
                 query += " AND budget <= %s"
-                params.append(budget)
-        
-        # Ejecutar la consulta con los parámetros
+                params.append(budget_float)
+            except ValueError:
+            # Si el presupuesto no es un número válido, simplemente lo ignoramos
+                pass
+    
         self.cur.execute(query, tuple(params))
-        self.events = self.cur.fetchall()
-        self.events = self.get_details(self.events)
-        close_cursor(self.cur)
-        return self.events
+        result = self.cur.fetchall()
+        return result
 # Func para obtener eventos por rango de fechas
     def get_events_by_date_range(self, start_date, end_date):
         return self.get_filtered_events(start_date=start_date, end_date=end_date)

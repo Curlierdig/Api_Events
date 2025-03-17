@@ -11,13 +11,21 @@ def get_events():
 # Blueprint para la ruta de eventos filtrados
 @bp.route('/events/filter', methods=['GET'])
 def get_filtered_events():
-    # Obtiene los parametros de la URL
+    #creamos una instancia de events tambien
     events = EventModel()
-    start_date = request.args.get('fechaInicio')
-    end_date = request.args.get('fechaFin')
-    budget = request.args.get('presupuesto')
-    type_id = request.args.getlist('tipo')
-
+    start_date = request.args.get('fecha', '')
+    budget = request.args.get('presupuesto', '')
+    
+    # Validación de parámetros
+    if not start_date:
+        start_date = None
+    if not budget:
+        budget = None
+    
+    # Otros parámetros que puedas tener
+    type_id = request.args.get('tipo', None)
+    end_date = request.args.get('fecha_fin', None)
+    
     return jsonify(events.get_filtered_events(start_date, end_date, type_id, budget))
 # Blueprint para la ruta de detalle de un evento
 @bp.route('/events/<int:id>', methods=['GET'])
