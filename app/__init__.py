@@ -11,7 +11,7 @@ def create_app(config_class = Config):
     load_dotenv()
     app = Flask(__name__)
     # Api key para probar el mapa
-    app.config['MAPBOX_TOKEN'] = 'pk.eyJ1Ijoicm9kcmlnby1hYmRlMSIsImEiOiJjbTg0cGw5ZHkyMGViMmxvazlxM3VpZDZsIn0.47YXppYyQNHnN_at8CcUQA'
+    app.config['MAPBOX_ACCESS_TOKEN'] = 'pk.eyJ1Ijoicm9kcmlnby1hYmRlMSIsImEiOiJjbTg0cGw5ZHkyMGViMmxvazlxM3VpZDZsIn0.47YXppYyQNHnN_at8CcUQA'
     app.register_blueprint(bp)
     # Carga la configuracion de la aplicacion
     app.config.from_object(config_class)
@@ -22,7 +22,7 @@ def create_app(config_class = Config):
     app.config['MYSQL_DB'] = app.config.get('DB_NAME')
     app.config['MYSQL_PORT'] = app.config.get('DB_PORT')
     app.config['MYSQL_CURSORCLASS'] = app.config.get('DB_CURSORCLASS')
-    app.config["MAPBOX_ACCESS_TOKEN"] = os.environ.get("MAPBOX_TOKEN")
+    app.config["MAPBOX_ACCESS_TOKEN"] = os.environ.get("MAPBOX_ACCESS_TOKEN", app.config['MAPBOX_ACCESS_TOKEN'])  
 
 
     init_app(app)

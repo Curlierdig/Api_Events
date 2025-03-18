@@ -10,12 +10,13 @@ def index():
     api_get_event = "http://127.0.0.1:4000/api/events/featured"
 
     try:
+        mapbox_token = current_app.config['MAPBOX_TOKEN']
         response = requests.get(api_get_event)
         response.raise_for_status()
 
         events = response.json()
 
-        return render_template('index.html', events=events)
+        return render_template('index.html', events=events, mapbox_token=mapbox_token)
     
     except requests.exceptions.RequestException as e:
         return jsonify({"error": str(e)}), 500
@@ -48,19 +49,13 @@ def show_event(id):
         response.raise_for_status()
 
         event = response.json()
-        
-        # Crea un punto para el mapa con los datos del evento
-        location_data = {
-            'latitude': event["location"]["lat"], 
-            'longitude': event["location"]["lng"],
-            'title': event["name"],  # Asumiendo que el evento tiene un nombre
-            'description': event["location"].get("address", "")  # Asumiendo que hay una dirección
-        }
-        
-        # Crea el mapa con el punto
-        map = Map([location_data])
 
-        return render_template('event_detail.html', event=event, map=map, mapbox_token=current_app.config["MAPBOX_ACCESS_TOKEN"])
+        if isinstance(event["date"], str):
+                event["date"] = datetime.strptime(event["date"], "%a, %d %b %Y %H:%M:%S %Z")
+
+        map = Map([{'latitude': event["location"]["lat"], 'longitude': event["location"]["lng"], 'label': event["name"]}], zoom=14, controls=True)
+
+        return render_template('event_detail.html', event=event,  map=map, mapbox_token=current_app.config["MAPBOX_ACCESS_TOKEN"])
     
     except requests.exceptions.RequestException as e:
         return jsonify({"error": str(e)}), 500

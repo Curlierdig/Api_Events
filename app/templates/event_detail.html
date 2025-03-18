@@ -1,5 +1,5 @@
 {% extends "/layouts/base.html" %}
-{% block title %}{{ event.name }} - ChiFest{% endblock %}
+{% block title %}{{ event.name }} - ChihuaEvents{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -56,31 +56,14 @@
           <div class="mb-4">
             <h2 class="h4 fw-bold mb-3" style="color: #324b4f;">Event Details</h2>
             <p class="lead mb-3">{{ event.description }}</p>
-            
-            <div class="p-3 rounded-3 mt-4" style="background-color: #d1ebe3;">
-              <div class="d-flex align-items-center mb-2">
-                <i class="fas fa-info-circle me-2" style="color: #005c83;"></i>
-                <span class="fw-semibold">Additional Information</span>
-              </div>
-              <p class="mb-0">This event is organized by {{ event.organizer.name }}. For more information, contact us at {{ event.organizer.contact }}.</p>
-            </div>
           </div>
           
           <div class="mb-4">
             <h2 class="h4 fw-bold mb-3" style="color: #324b4f;">Location</h2>
             <div class="rounded-3 overflow-hidden">
               <div id="mapbox-token" data-token="{{ mapbox_token }}" hidden></div>
-              <div class="h-100">{{ map }}</div>
+              <div id="map" style="height: 500px; width: 100%;">{{ map }}</div>
             </div>
-          </div>
-          
-          <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
-            <button class="btn btn-lg px-4" style="background-color: #19c6db; color: #324b4f;">
-              <i class="fas fa-ticket-alt me-2"></i>Buy Tickets
-            </button>
-            <button class="btn btn-lg px-4" style="border-color: #348774; color: #324b4f;">
-              <i class="fas fa-share-alt me-2"></i>Share
-            </button>
           </div>
         </div>
       </div>
@@ -113,32 +96,14 @@
       
       <div class="card shadow border-0 rounded-3 mb-4">
         <div class="card-body p-4">
-          <h2 class="h4 fw-bold mb-3" style="color: #324b4f;">Similar Events</h2>
-          <p class="text-muted">Discover more {{ event.type.name }} events on ChiFest.</p>
+          <h2 class="h4 fw-bold mb-3" style="color: #324b4f;">Eventos similares</h2>
+          <p class="text-muted">Discover more {{ event.type.name }} Eventos de ChihuaEvents.</p>
           <a href="/events?type={{ event.type.id }}" class="btn w-100" style="border-color: #005c83; color: #005c83;">View more similar events</a>
-        </div>
-      </div>
-      
-      <div class="card shadow border-0 rounded-3">
-        <div class="card-body p-4">
-          <h2 class="h4 fw-bold mb-3" style="color: #324b4f;">Share this event</h2>
-          <div class="d-flex justify-content-between">
-            <a href="#" class="btn" style="border-color: #005c83; color: #005c83;">
-              <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="#" class="btn" style="border-color: #19c6db; color: #19c6db;">
-              <i class="fab fa-twitter"></i>
-            </a>
-            <a href="#" class="btn" style="border-color: #348774; color: #348774;">
-              <i class="fab fa-whatsapp"></i>
-            </a>
-            <a href="#" class="btn" style="border-color: #324b4f; color: #324b4f;">
-              <i class="fas fa-envelope"></i>
-            </a>
-          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 {% endblock %}
+
+

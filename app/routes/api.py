@@ -11,23 +11,33 @@ def get_events():
 # Blueprint para la ruta de eventos filtrados
 @bp.route('/events/filter', methods=['GET'])
 def get_filtered_events():
-    events = EventModel()
     try:
-        start_date = request.args.get('fechaInicio')
-        end_date = request.args.get('fechaFin')
-        budget = request.args.get('presupuesto')
-        type_id = request.args.getlist('tipo')
-        match (budget, type_id):
-            case ('', []):
-                return jsonify(events.get_filtered_events(start_date, end_date))
-            case ('', type_id):
-                return jsonify(events.get_filtered_events(start_date, end_date, type_id))
-            case (budget, []):
-                return jsonify(events.get_filtered_events(start_date, end_date, type_id=None, budget=budget))
-            case _:
-                return jsonify(events.get_filtered_events(start_date, end_date, type_id, budget))
-    except KeyError as e:
-        return jsonify({'error': str(e)})
+        start_date = request.args.get('fechaInicio', default=None, type=str)
+        end_date = request.args.get('fechaFin', default=None, type=str)
+        budget = request.args.get('presupuesto', default=None, type=float)
+        event_types = request.args.getlist('tipo')  # Usar getlist para múltiples valores
+        
+        # Lógica mejorada de filtrado
+        filtered_events = EventModel.query
+        
+        if start_date and end_date:
+            filtered_events = filtered_events.filter(
+                EventModel.date >= start_date,
+                EventModel.date <= end_date
+            )
+            
+        if budget:
+            filtered_events = filtered_events.filter(EventModel.budget <= budget)
+            
+        if event_types:
+            filtered_events = filtered_events.filter(EventModel.type_id.in_(event_types))
+        
+        results = [event.to_dict() for event in filtered_events.all()]
+        
+        return jsonify(results)
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 # Blueprint para la ruta de detalle de un evento
 @bp.route('/events/<int:id>', methods=['GET'])
 def get_event(id):
