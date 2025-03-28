@@ -68,53 +68,54 @@ class EventModel:
         close_cursor(self.cur)
         return event
 # Func para eventos filtrados 
-    def get_filtered_events(self, start_date=None, end_date=None, type_id=None, budget=None):
-        query = "SELECT * FROM events WHERE 1=1"
+    def get_filtered_events(self, start_date=None, end_date=None, id=None, budget=None):
+        query = "SELECT * FROM tevents WHERE 1=1"
         params = []
     
-        if start_date:
+        # Filtro de fechas
+        if start_date is not None:
             query += " AND date >= %s"
             params.append(start_date)
-    
-        if end_date:
+        if end_date is not None:
             query += " AND date <= %s"
             params.append(end_date)
-    
-        if type_id is not None:
-            if len(type_id) > 1:
-                values = ', '.join(['%s'] * len(type_id))
-                query += f" AND type_id IN ({values})"
-                params.extend(type_id)
-            else:
-                query += " AND type_id = %s"
-                params.append(type_id)
         
+        # Filtro de categorías (usando id en lugar de type_id)
+        if id is not None:
+            # Si es una lista
+            if isinstance(id, list):
+                # Convertir a lista de enteros si no lo están
+                id = [int(t) for t in id]
+                
+                # Si la lista no está vacía
+                if id:
+                    placeholders = ', '.join(['%s'] * len(id))
+                    query += f" AND id IN ({placeholders})"
+                    params.extend(id)
+            else:
+                # Si es un solo valor
+                query += " AND id = %s"
+                params.append(int(id))
+        
+        # Filtro de presupuesto
         if budget is not None:
             query += " AND budget <= %s"
             params.append(budget)
-
-        query += "ORDER BY date"
         
-        # Ejecutar la consulta con los parámetros
-        self.cur.execute(query, tuple(params))
-        self.events = self.cur.fetchall()
-        self.events = self.get_details(self.events)
-        close_cursor(self.cur)
-        return self.events
-# Func para obtener eventos por rango de fechas
-    def get_events_by_date_range(self, start_date, end_date):
-        return self.get_filtered_events(start_date=start_date, end_date=end_date)
-# Func para obtener eventos por tipo
-    def get_events_by_type(self, type_id):
-        return self.get_filtered_events(type_id=type_id)
-# Obtener los eventos por presupuesto
-    def get_events_by_budget(self, max_budget):
-        return self.get_filtered_events(budget=max_budget)
-# Obtener los eventos destacados    
-    def get_featured_events(self):
-        query = f"SELECT * FROM tevents WHERE date >= '{date.today()}' AND date <= '{date.today() + timedelta(7)}'"
-        self.cur.execute(query)
-        self.events = self.cur.fetchall()
-        self.events = self.get_details(self.events)
-        close_cursor(self.cur)
-        return self.events
+        query += " ORDER BY date"
+        
+        print("Consulta final:", query)  # Debug
+        print("Parámetros:", params)     # Debug
+        
+        try:
+            self.cur = get_cursor()  # Restablecer el cursor
+            self.cur.execute(query, tuple(params))
+            self.events = self.cur.fetchall()
+            self.events = self.get_details(self.events)
+            print(self.events)
+            return self.events
+        except Exception as e:
+            print("Error en la consulta:", str(e))  # Debug
+            raise
+        finally:
+            close_cursor(self.cur)

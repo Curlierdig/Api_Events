@@ -5,65 +5,68 @@
   <div class="row g-4">
     <!-- Sidebar con filtros -->
     <div class="col-12 col-lg-3 mb-4">
-      <div class="card border-0 shadow rounded-3 sticky-top" style="top: 20px">
-        <div class="card-header bg-white border-0 pt-4">
-          <h3 class="h5 mb-0 text-dark">Filtros</h3>
+      <div class="card border-0 shadow-lg rounded-4 sticky-top" style="top: 20px; color: #000;">
+        <div class="card-header bg-gradient-primary border-0 pt-4 pb-3 rounded-top-4">
+          <h3 class="h5 mb-0">Filtros</h3>
         </div>
         <div class="card-body">
           <form id="filterForm" class="d-flex flex-column gap-3">
             <!-- Rango de fecha -->
-            <!-- Cambiar el input de fecha única a rango -->
-			<div class="mb-3">
-    		<label for="daterange" class="form-label fw-semibold text-dark">Rango de fechas</label>
-    		<input type="text" class="form-control border-secondary" 
-          		id="daterange" name="daterange"
-           		data-start-date="fechaInicio"
-           		data-end-date="fechaFin">
-			</div>
-
+            <div class="mb-3">
+                <label for="daterange" class="form-label fw-semibold text-primary">Rango de fechas</label>
+                <input type="text" class="form-control border-primary" id="daterange" name="daterange">
+                <input type="hidden" id="startDate" name="startDate">
+                <input type="hidden" id="endDate" name="endDate">
+            </div>
+      
             <!-- Tipo de evento -->
             <div class="mb-3">
-              <label class="form-label fw-semibold text-dark">Tipo de evento</label>
+              <label class="form-label fw-semibold text-primary">Tipo de evento</label>
               <div class="dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Select categories
+                <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Seleccionar categorías
                 </button>
                 <ul class="dropdown-menu p-3 w-100 shadow-sm">
                   {% set categories = [
-                    {'id': 'musical', 'value': '1', 'label': 'Musical'},
-                    {'id': 'festival', 'value': '2', 'label': 'Festival'},
-                    {'id': 'conferencia', 'value': '3', 'label': 'Conferencia'},
-                    {'id': 'exhibicion', 'value': '4', 'label': 'Exhibición'},
-                    {'id': 'fiesta', 'value': '5', 'label': 'Fiesta'},
-                    {'id': 'teatro', 'value': '6', 'label': 'Teatro'},
-                    {'id': 'deportivo', 'value': '7', 'label': 'Deportes'},
-                    {'id': 'cultural', 'value': '8', 'label': 'Cultural'},
-                    {'id': 'gastronomia', 'value': '9', 'label': 'Gastronomía'},
-                    {'id': 'educativo', 'value': '10', 'label': 'Educativo'}
+                    {'id': 'musical', 'value': '1', 'label': 'Musical', 'icon': 'bi-music-note-beamed'},
+                    {'id': 'festival', 'value': '2', 'label': 'Festival', 'icon': 'bi-people-fill'},
+                    {'id': 'conferencia', 'value': '3', 'label': 'Conferencia', 'icon': 'bi-mic-fill'},
+                    {'id': 'exhibicion', 'value': '4', 'label': 'Exhibición', 'icon': 'bi-easel-fill'},
+                    {'id': 'fiesta', 'value': '5', 'label': 'Fiesta', 'icon': 'bi-emoji-sunglasses'},
+                    {'id': 'teatro', 'value': '6', 'label': 'Teatro', 'icon': 'bi-mask'},
+                    {'id': 'deportivo', 'value': '7', 'label': 'Deportes', 'icon': 'bi-trophy-fill'},
+                    {'id': 'cultural', 'value': '8', 'label': 'Cultural', 'icon': 'bi-book-fill'},
+                    {'id': 'gastronomia', 'value': '9', 'label': 'Gastronomía', 'icon': 'bi-cup-hot-fill'},
+                    {'id': 'educativo', 'value': '10', 'label': 'Educativo', 'icon': 'bi-mortarboard-fill'}
                   ] %}
                   
                   {% for cat in categories %}
                   <li class="mb-2">
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" id="{{ cat.id }}" name="tipo" value="{{ cat.value }}" />
-                      <label class="form-check-label" for="{{ cat.id }}">{{ cat.label }}</label>
+                      <input class="form-check-input accent-primary" type="checkbox" id="{{ cat.id }}" name="tipo" value="{{ cat.value }}" />
+                      <label class="form-check-label" for="{{ cat.id }}">
+                        <i class="bi {{ cat.icon }} me-2 text-primary"></i>{{ cat.label }}
+                      </label>
                     </div>
                   </li>
                   {% endfor %}
                 </ul>
               </div>
             </div>
-
+      
             <!-- Presupuesto -->
             <div class="mb-3">
-              <label for="presupuesto" class="form-label fw-semibold text-dark">Presupuesto máximo</label>
+              <label for="presupuesto" class="form-label fw-semibold text-primary">Presupuesto máximo</label>
               <div class="input-group">
-                <span class="input-group-text bg-white">$</span>
-                <input class="form-control border-secondary" type="number" id="presupuesto" name="presupuesto" placeholder="MXN" min="0" max="5000" />
+                <span class="input-group-text bg-light border-primary">$</span>
+                <input class="form-control border-primary" type="number" id="presupuesto" name="presupuesto" placeholder="MXN" min="0" max="5000" />
               </div>
             </div>
-
-            <button type="submit" class="btn w-100 mt-2 text-white" style="background-color: #343a40">Buscar</button>
+      
+            <button type="submit" class="btn w-100 mt-3 text-white fw-semibold btn-primary">
+              <i class="bi bi-search me-2"></i>Buscar eventos
+            </button>
+            <button type="reset" class="btn btn-outline-secondary w-100">Limpiar filtros</button>
           </form>
         </div>
       </div>
@@ -87,7 +90,7 @@
                 <div class="col-md-4">
                   <div class="card h-100 border-0 shadow-lg rounded-3">
                     <div class="position-relative">
-                      <img class="card-img-top rounded-top" src="{{ url_for('static', filename='img/events/' ~ events[j].image) }}" alt="{{ events[j].name }}" style="height: 220px; object-fit: cover">
+                      <img class="card-img-top rounded-top" src="{{ url_for('static', filename='img/cuu2.jpeg')}}" alt="{{ events[j].name }}" style="height: 220px; object-fit: cover">
                       <span class="position-absolute top-0 end-0 m-2 badge rounded-pill fs-6" style="background-color: #5e35b1; color: white">
                         {{ events[j].type.name }}
                       </span>

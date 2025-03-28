@@ -1,18 +1,19 @@
 $(function () {
-	// Fecha actual para mínimo
+	/* Function to set the date range picker plugin */
+	// Actual date
 	var hoy = moment();
 
-	// Fecha máxima (último día de 2025)
+	// Maximum date
 	var fechaMaxima = moment("2025-12-31");
 
-	// Inicializar el daterangepicker
+	// Initializer
 	$("#daterange").daterangepicker(
 		{
 			opens: "left",
 			startDate: hoy,
 			endDate: moment().add(7, "days"),
-			minDate: hoy, // Restringir fechas anteriores a hoy
-			maxDate: fechaMaxima, // Restringir fechas posteriores a 2025
+			minDate: hoy,
+			maxDate: fechaMaxima,
 			ranges: {
 				Hoy: [moment(), moment()],
 				Mañana: [moment().add(1, "days"), moment().add(1, "days")],
@@ -23,13 +24,13 @@ $(function () {
 			},
 		},
 		function (start, end, label) {
-			// Cuando el usuario seleccione fechas, actualizar los campos hidden
-			$("#fechaInicio").val(start.format("YYYY-MM-DD"));
-			$("#fechaFin").val(end.format("YYYY-MM-DD"));
+			// When the user selects dates it will update the hidden fields 
+			$("#startDate").val(start.format("YYYY-MM-DD"));
+			$("#endDate").val(end.format("YYYY-MM-DD"));
 		}
 	);
 
-	// Establecer valores iniciales para los campos ocultos
-	$("#fechaInicio").val(moment().format("YYYY-MM-DD"));
-	$("#fechaFin").val(moment().add(7, "days").format("YYYY-MM-DD"));
+	// Establish initial values for hidden fields
+	$("#startDate").val(moment().format("YYYY-MM-DD"));
+	$("#endDate").val(moment().add(7, "days").format("YYYY-MM-DD"));
 });

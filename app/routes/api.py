@@ -11,31 +11,39 @@ def get_events():
 # Blueprint para la ruta de eventos filtrados
 @bp.route('/events/filter', methods=['GET'])
 def get_filtered_events():
+    """ Endpoint to filter the events by parameters given by arguments """
+    events = EventModel()
     try:
-        start_date = request.args.get('fechaInicio', default=None, type=str)
-        end_date = request.args.get('fechaFin', default=None, type=str)
-        budget = request.args.get('presupuesto', default=None, type=float)
-        event_types = request.args.getlist('tipo')  # Usar getlist para múltiples valores
-        
-        # Lógica mejorada de filtrado
-        filtered_events = EventModel.query
-        
-        if start_date and end_date:
-            filtered_events = filtered_events.filter(
-                EventModel.date >= start_date,
-                EventModel.date <= end_date
-            )
-            
-        if budget:
-            filtered_events = filtered_events.filter(EventModel.budget <= budget)
-            
-        if event_types:
-            filtered_events = filtered_events.filter(EventModel.type_id.in_(event_types))
-        
-        results = [event.to_dict() for event in filtered_events.all()]
-        
-        return jsonify(results)
-    
+        start_date = request.args.get('startDate')
+        end_date = request.args.get('endDate')
+        budget = request.args.get('presupuesto')
+        type_id = request.args.getlist('tipo')
+
+        # Convertir cadenas vacías a None
+        start_date = start_date if start_date != '' else None
+        end_date = end_date if end_date != '' else None
+        budget = budget if budget != '' else None
+
+        """ # Convertir budget a float si no es None
+        if budget is not None:
+            try:
+                budget = float(budget)
+            except ValueError:
+                return jsonify({'error': 'Presupuesto no válido'}), 400 """
+
+        # Determinar qué parámetros pasar al modelo
+        args = {}
+        if start_date is not None:
+            args['start_date'] = start_date
+        if end_date is not None:
+            args['end_date'] = end_date
+        if type_id:
+            args['type_id'] = type_id
+        if budget is not None:
+            args['budget'] = budget
+
+        filtered_events = events.get_filtered_events(**args)
+        return jsonify(filtered_events)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 # Blueprint para la ruta de detalle de un evento

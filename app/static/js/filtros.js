@@ -1,225 +1,142 @@
 $(function () {
-    // Manejar el envío del formulario
+    // Función para manejar el envío del formulario
     $("#filterForm").on("submit", function (e) {
         e.preventDefault();
-        
-        // Recoger datos del formulario correctamente
-        const formData = {
-            fechaInicio: $("#fechaInicio").val(),
-            fechaFin: $("#fechaFin").val(),
-            presupuesto: $("#presupuesto").val(),
-            tipo: $("input[name='tipo']:checked").map(function() {
-                return $(this).val();
-            }).get()
-        };
+
+        /* // Procesar el rango de fechas
+        var dateRange = $('#daterange').val();
+        var startDate = $('#startDate').val();
+        var endDate = $('#endDate').val(); */
+
+
+        // Recoger todos los parámetros del formulario
+        /* var formData = {
+            start_date: startDate,
+            end_date: endDate,
+            type_id: $('input[name="tipo"]:checked').map(function() {
+                return this.value;
+            }).get(),
+            budget: $('#presupuesto').val() || null
+        }; */
+
+        var formData = $(this).serialize();
 
         // Limpiar parámetros vacíos
-        const cleanParams = Object.fromEntries(
-            Object.entries(formData).filter(([_, v]) => v !== '' && v !== null && v.length !== 0)
-        );
+        /* var cleanParams = {};
+        Object.keys(formData).forEach(function(key) {
+            cleanParams[key] = formData[key];
+        }); */
 
+        // Realizar la petición AJAX
         $.ajax({
             url: "/api/events/filter",
             type: "GET",
-            data: cleanParams,
-            beforeSend: function() {
-                $("#eventosCarousel").addClass("loading");
+            data: formData,
+            success: function(response) {
+                handleFilterResponse(response);
             },
-            success: function (response) {
-                updateCarousel(response);
-            },
-            error: function (xhr) {
-                handleAjaxError(xhr);
-            },
-            complete: function() {
-                $("#eventosCarousel").removeClass("loading");
+            error: function(error) {
+                console.error("Error al filtrar eventos:", error);
+                $("#eventResults").html(
+                    '<div class="col-12">'+
+                    '<div class="alert alert-danger text-center">Error al buscar eventos. Intenta nuevamente.</div>'+
+                    '</div>'
+                );
+                scrollToResults();
             }
         });
     });
 
-    // Función para actualizar el carrusel
-    function updateCarousel(events) {
-        const carouselInner = $("#eventosCarousel .carousel-inner");
-        carouselInner.empty();
+    // Función para manejar la respuesta exitosa
+    function handleFilterResponse(events) {
+        $(".carousel-inner .carousel-item .row").empty();
 
         if (events.length === 0) {
-            carouselInner.html(noEventsTemplate());
-            resetCarouselIndicators(0);
+            $(".carousel-inner .carousel-item .row").html(
+                '<div class="col-12">'+
+                '<div class="alert alert-info text-center">No se encontraron eventos con los filtros seleccionados</div>'+
+                '</div>'
+            );
+            scrollToResults();
             return;
         }
 
-        const totalGroups = Math.ceil(events.length / 3);
-        const carouselItems = events.reduce((acc, event, index) => {
-            if (index % 3 === 0) {
-                acc.push({
-                    active: index === 0,
-                    events: [event]
-                });
-            } else {
-                acc[acc.length - 1].events.push(event);
-            }
-            return acc;
-        }, []);
-
-        carouselInner.html(carouselItems.map(createCarouselItem).join(''));
-        resetCarouselIndicators(totalGroups);
-        initializeCarousel();
-    }
-
-    // Plantilla para cuando no hay eventos
-    function noEventsTemplate() {
-        return `
-            <div class="carousel-item active">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="alert alert-info text-center shadow-sm">
-                            No se encontraron eventos que coincidan con los filtros.
+        // Generar tarjetas de eventos
+        events.forEach(function(event) {
+            var eventCard = `
+                <div class="col-12 col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="position-relative">
+                            <img class="card-img-top" src="/static/img/events/${event.image}" alt="${event.name}" style="min-height: 280px; object-fit: cover;">
+                            <span class="position-absolute top-0 end-0 m-2 px-2 py-1 rounded-pill fs-6" style="background-color: #19c6db; color: #324b4f;">
+                                ${event.type.name}
+                            </span>
                         </div>
-                    </div>
-                </div>
-            </div>`;
-    }
-
-    // Crear item del carrusel
-    function createCarouselItem(group, index) {
-        return `
-            <div class="carousel-item ${group.active ? 'active' : ''}">
-                <div class="row g-4">
-                    ${group.events.map(event => createEventCard(event)).join('')}
-                </div>
-            </div>`;
-    }
-
-    // Función para crear tarjeta de evento
-    function createEventCard(event) {
-        const safeData = {
-            name: event.name || 'Evento sin nombre',
-            description: event.description || 'Descripción no disponible',
-            date: formatEventDate(event.date),
-            budget: event.budget ? `$${event.budget} MXN` : 'Gratis',
-            image: event.image || 'default.jpg',
-            type: event.type?.name || 'General',
-            address: event.location?.address ? 
-                truncateText(event.location.address, 20) : 'Ubicación no especificada',
-            time: event.time || '--:--',
-            id: event.id || '#'
-        };
-
-        return `
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-lg rounded-3">
-                    <div class="position-relative">
-                        <img class="card-img-top rounded-top" 
-                             src="/static/img/events/${safeData.image}" 
-                             alt="${safeData.name}" 
-                             style="height: 220px; object-fit: cover">
-                        <span class="position-absolute top-0 end-0 m-2 badge rounded-pill fs-6" 
-                              style="background-color: #5e35b1; color: white">
-                            ${safeData.type}
-                        </span>
-                    </div>
-                    <div class="card-body d-flex flex-column p-3">
-                        <h4 class="card-title h5 fw-bold text-dark mb-2">${safeData.name}</h4>
-                        <p class="card-text text-secondary small flex-grow-1">${safeData.description}</p>
-                        
-                        <div class="mt-auto pt-3">
-                            <div class="d-flex flex-wrap gap-2 mb-3">
-                                <span class="badge rounded-pill" style="background-color: #00796b; color: white">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+                                <span class="px-2 py-1 rounded-2 mb-1" style="background-color: #005c83; color: white;">
                                     <i class="fa-solid fa-calendar-days me-1"></i>
-                                    ${safeData.date}
+                                    ${event.date}
                                 </span>
-                                <span class="badge rounded-pill" style="background-color: #e65100; color: white">
-                                    <i class="fa-solid fa-money-bill me-1"></i>
-                                    ${safeData.budget}
+                                <span class="px-2 py-1 rounded-3 fw-bold" style="background-color: #348774; color: white;">
+                                    <i class="fa-solid fa-money-bill me-2"></i>
+                                    $${event.budget} MXN
                                 </span>
                             </div>
-                            
-                            <div class="d-flex justify-content-between align-items-center text-muted small">
-                                <span>
-                                    <i class="fas fa-map-marker-alt me-1"></i>${safeData.address}
+                            <h3 class="card-title h5 fw-bold">${event.name}</h3>
+                            <p class="card-text text-muted mb-3">
+                                <i class="fas fa-map-marker-alt me-1"></i>
+                                ${event.location.address}
+                            </p>
+                            <p class="card-text">${event.description}</p>
+                            <div class="d-flex justify-content-between mt-auto">
+                                <span class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>
+                                    ${event.time}
                                 </span>
-                                <span>
-                                    <i class="fas fa-clock me-1"></i>${safeData.time}
-                                </span>
+                                <a href="/event/${event.id}" class="btn btn-sm" style="border-color: #005c83; color: #005c83;">
+                                    Ver detalles
+                                </a>
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer bg-white border-0 py-3 text-center">
-                        <a href="/event/${safeData.id}" 
-                           class="btn text-white" 
-                           style="background-color: #5e35b1">
-                            Ver detalles
-                        </a>
-                    </div>
-                </div>
-            </div>`;
+                </div>`;
+            
+            $(".carousel-inner .carousel-item .row").append(eventCard);
+        });
+
+        scrollToResults();
     }
 
-    // Formatear fecha
+    // Función para formatear fechas
     function formatEventDate(dateString) {
         try {
             if (!dateString) return "Fecha no disponible";
-            const dateObj = new Date(dateString);
-            if (isNaN(dateObj)) return "Fecha inválida";
-            return dateObj.toLocaleDateString('es-ES', { 
-                day: 'numeric', 
+            const options = { 
+                weekday: 'short', 
+                year: 'numeric', 
                 month: 'short', 
-                year: 'numeric' 
-            });
+                day: 'numeric' 
+            };
+            return new Date(dateString).toLocaleDateString('es-MX', options);
         } catch (e) {
-            console.error("Error formatting date:", e);
-            return "Fecha no disponible";
+            console.error("Error formateando fecha:", e);
+            return "Fecha inválida";
         }
     }
 
-    // Acortar texto
-    function truncateText(text, maxLength) {
-        return text.length > maxLength ? 
-            `${text.substring(0, maxLength)}...` : text;
+    // Función para scroll a los resultados
+    function scrollToResults() {
+        $('html, body').animate({
+            scrollTop: $("#eventResults").offset().top - 100
+        }, 500);
     }
 
-    // Reiniciar indicadores
-    function resetCarouselIndicators(totalGroups) {
-        const indicators = $('.carousel-indicators');
-        indicators.empty().toggle(totalGroups > 0);
-        
-        if (totalGroups === 0) return;
-        
-        indicators.append(Array.from({length: totalGroups}, (_, i) => `
-            <button type="button" 
-                    data-bs-target="#eventosCarousel" 
-                    data-bs-slide-to="${i}"
-                    class="${i === 0 ? 'active' : ''} bg-white"
-                    style="width: 10px; height: 10px; border-radius: 50%; opacity: 0.8;">
-            </button>
-        `).join(''));
-    }
-
-    // Inicializar/reiniciar carrusel
-    function initializeCarousel() {
-        const carousel = $('#eventosCarousel');
-        carousel.carousel('dispose').carousel({
-            interval: 5000,
-            wrap: true
-        });
-    }
-
-    // Manejar errores AJAX
-    function handleAjaxError(xhr) {
-        console.error("Error:", xhr.responseJSON?.error || "Error desconocido");
-        const errorMsg = xhr.status === 0 ? 
-            "Error de conexión" : 
-            "Ha ocurrido un error. Por favor, intenta de nuevo.";
-        
-        $("#eventosCarousel .carousel-inner").html(`
-            <div class="carousel-item active">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="alert alert-danger shadow-sm">${errorMsg}</div>
-                    </div>
-                </div>
-            </div>
-        `);
-        resetCarouselIndicators(0);
-    }
+    // Reset del formulario
+    $("#filterForm").on("reset", function() {
+        setTimeout(function() {
+            $("#eventResults").empty();
+            scrollToResults();
+        }, 100);
+    });
 });

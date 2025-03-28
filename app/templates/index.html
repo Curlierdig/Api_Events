@@ -1,5 +1,5 @@
 {% extends "/layouts/base.html"%} {% block title %}ChihuaEvents{% endblock %} {% block body %}
-<div class="p-5 rounded-3 mb-5 text-center" style="background-color: #324b4f; color: white;">
+<div class="p-5 rounded-3 mb-5 text-center" style="color: white;">
 	<div class="py-4">
 		<div class="position-relative">
             <div class="img-start shadow">
@@ -18,94 +18,6 @@
 	</div>
 </div>
 
-<div id="event-filters" class="p-4 rounded-3 shadow-sm mb-5" style="background-color: #324b4f; color: white;">
-	<form id="filterForm" class="g-3 d-flex gap-3 flex-wrap justify-content-center">
-		<div>
-			<label for="daterange" class="form-label fw-bold">Rango de fecha</label>
-			<input type="text" id="daterange" name="daterange" class="form-control text-dark" style="border-color: #000;" />
-			<input type="hidden" id="fechaInicio" name="fechaInicio" />
-			<input type="hidden" id="fechaFin" name="fechaFin" />
-		</div>
-		<div class="">
-			<label class="form-label fw-bold">Event Type</label>
-			<div class="dropdown">
-				<button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #fff; border-color: #000;">Selecciona las categorias</button>
-				<ul class="dropdown-menu p-3 w-100">
-					<li class="mb-2">
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" id="musical" name="tipo" value="1" style="border-color: #000;" />
-							<label class="form-check-label" for="musical">Musical</label>
-						</div>
-					</li>
-					<li class="mb-2">
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" id="festival" name="tipo" value="2" style="border-color: #000;" />
-							<label class="form-check-label" for="festival">Festival</label>
-						</div>
-					</li>
-					<li class="mb-2">
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" id="conferencia" name="tipo" value="3" style="border-color: #000;" />
-							<label class="form-check-label" for="conferencia">Conferencia</label>
-						</div>
-					</li>
-					<li class="mb-2">
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" id="exhibicion" name="tipo" value="4" style="border-color: #000;" />
-							<label class="form-check-label" for="exhibicion">Exhibición</label>
-						</div>
-					</li>
-					<li class="mb-2">
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" id="fiesta" name="tipo" value="5" style="border-color: #000;" />
-							<label class="form-check-label" for="fiesta">Fiesta</label>
-						</div>
-					</li>
-					<li class="mb-2">
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" id="teatro" name="tipo" value="6" style="border-color: #000;" />
-							<label class="form-check-label" for="teatro">Teatro</label>
-						</div>
-					</li>
-					<li class="mb-2">
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" id="deportivo" name="tipo" value="7" style="border-color: #000;" />
-							<label class="form-check-label" for="deportivo">Deportivo</label>
-						</div>
-					</li>
-					<li class="mb-2">
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" id="cultural" name="tipo" value="8" style="border-color: #000;" />
-							<label class="form-check-label" for="cultural">Cultural</label>
-						</div>
-					</li>
-					<li class="mb-2">
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" id="gastronomia" name="tipo" value="9" style="border-color: #000;" />
-							<label class="form-check-label" for="gastronomia">Gastronomia</label>
-						</div>
-					</li>
-					<li class="mb-2">
-						<div class="form-check">
-							<input class="form-check-input" type="checkbox" id="educativo" name="tipo" value="10" style="border-color: #000;" />
-							<label class="form-check-label" for="educativo">Educativo</label>
-						</div>
-					</li>
-				</ul>
-			</div>
-		</div>
-		<div class="">
-			<label for="presupuesto" class="form-label fw-bold">Presupuesto máximo</label>
-			<input class="form-control" type="number" id="presupuesto" name="presupuesto" placeholder="MXN" min="0" max="5000" style="border-color: #000;" />
-		</div>
-		<div class="d-flex align-items-end">
-			<button type="submit" class="btn w-100" style="background-color: #338346; color: #fff;">Buscar eventos</button>
-		</div>
-	</form>
-</div>
-
-<div id="eventResults" class="container row mb-3">
-</div>
 
 <div class="mb-5">
 
@@ -122,24 +34,7 @@
 									<img class="card-img-top" src="{{ url_for('static', filename='img/events/' ~ event.image) }}" alt="{{ event.name }}" style="min-height: 255px; object-fit: cover;" />
 									<span class="position-absolute top-0 end-0 m-2 px-2 py-1 rounded-pill fs-6" style="background-color: #338346; color: #324b4f;">{{ event.type.name }}</span>
 								</div>
-								<div class="card-body">
-									<div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
-										<span class="px-2 py-1 rounded-2 mb-1" style="background-color: #005c83; color: white;">
-											<i class="fa-solid fa-calendar-days me-2"></i>
-											{{ event.date.strftime('%a, %d %b %Y') }}
-										</span>
-										<span class="px-2 py-1 rounded-3 fw-bold" style="background-color: #348774; color: white;">
-											<i class="fa-solid fa-money-bill me-2"></i>${{ event.budget }} MXN
-										</span>
-									</div>
-									<h3 class="card-title h5 fw-bold">{{ event.name }}</h3>
-									<p class="card-text text-muted mb-3"><i class="fas fa-map-marker-alt me-1"></i>{{ event.location.address }}</p>
-									<p class="card-text">{{ event.description }}</p>
-									<div class="d-flex justify-content-between">
-										<span class="text-muted"><i class="fas fa-clock me-1"></i>{{ event.time }}</span>
-										<a href="/event/{{ event.id }}" class="btn btn-sm" style="border-color: #005c83; color: #005c83;">View details</a>
-									</div>
-								</div>
+								
 							</div>
 						</div>
 						{% endfor %}
@@ -147,20 +42,7 @@
 				</div>
 				{% endfor %}
 			</div>
-			{% if events|length > 3 %}
-			<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide="prev">
-				<div class="rounded-circle d-flex justify-content-center align-items-center" style="width: 40px; height: 40px; background-color: rgba(50, 75, 79, 0.5);">
-					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-				</div>
-				<span class="visually-hidden">Previous</span>
-			</button>
-			<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators2" data-bs-slide="next">
-				<div class="rounded-circle d-flex justify-content-center align-items-center" style="width: 40px; height: 40px; background-color: rgba(50, 75, 79, 0.5);">
-					<span class="carousel-control-next-icon" aria-hidden="true"></span>
-				</div>
-				<span class="visually-hidden">Next</span>
-			</button>
-			{% endif %}
+			
 		</div>
 	</div>
 	{% endblock %}
